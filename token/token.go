@@ -29,16 +29,19 @@ const (
 	INT   = "INT"   // 123456
 
 	// operators
-	ASSIGN = "="
-	PLUS   = "+"
-	MINUS  = "-"
-	SLASH  = "/"
-	BANG = "!" 
-	ASTERISK = "*"	
+	ASSIGN   = "="
+	PLUS     = "+"
+	MINUS    = "-"
+	SLASH    = "/"
+	BANG     = "!"
+	ASTERISK = "*"
 
 	// logical operators
 	LT = "<"
 	GT = ">"
+
+	EQ     = "=="
+	NOT_EQ = "!="
 
 	// delimiters
 	COMMA     = ","
@@ -53,22 +56,21 @@ const (
 	LET      = "LET"
 	FUNCTION = "FUNCTION"
 	RETURN   = "RETURN"
-	TRUE	 = "TRUE"
-	FALSE	 = "FALSE"
-	IF		 = "IF"
-	ELSE	 = "ELSE"
+	TRUE     = "TRUE"
+	FALSE    = "FALSE"
+	IF       = "IF"
+	ELSE     = "ELSE"
 )
-
 
 // differentiates between keywords and identifiers using a map
 var keywords = map[string]TokenType{
-	"fn":  FUNCTION,
-	"let": LET,
+	"fn":     FUNCTION,
+	"let":    LET,
 	"return": RETURN,
-	"true": TRUE,
-	"false": FALSE,
-	"if": IF,
-	"else": ELSE,
+	"true":   TRUE,
+	"false":  FALSE,
+	"if":     IF,
+	"else":   ELSE,
 }
 
 // LookupIdent checks if the identifier is a keyword

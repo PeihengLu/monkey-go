@@ -40,16 +40,28 @@ func (l *Lexer) readChar() {
 	l.readPosition++
 }
 
+// peekChar returns the next character in the input string
+// without incrementing the readPosition
+// used in the parsing of two-character operators
+func (l *Lexer) peekChar() byte {
+	// Check if the readPosition is greater than or equal to the length of the input string
+	if l.readPosition >= len(l.input) {
+		// Return 0 (NUL)
+		return 0
+	} else {
+		// Return the character at the readPosition
+		return l.input[l.readPosition]
+	}
+}
+
 // nextToken returns the next token in the input string
-func (l *Lexer) nextToken() token.Token {
+func (l *Lexer) NextToken() token.Token {
 	var tok token.Token
 
 	// skip whitespaces and newlines
 	l.skipWhitespace()
 
 	switch l.ch {
-	case '=':
-		tok = newToken(token.ASSIGN, l.ch)
 	case ';':
 		tok = newToken(token.SEMICOLON, l.ch)
 	case '(':
@@ -67,7 +79,14 @@ func (l *Lexer) nextToken() token.Token {
 	case '-':
 		tok = newToken(token.MINUS, l.ch)
 	case '!':
-		tok = newToken(token.BANG, l.ch)
+		// check if the next character is an equal sign
+		if l.peekChar() == '=' {
+			// read the equal sign
+			l.readChar()
+			tok = token.Token{Type: token.NOT_EQ, Literal: "!="}
+		} else {
+			tok = newToken(token.BANG, l.ch)
+		}
 	case '*':
 		tok = newToken(token.ASTERISK, l.ch)
 	case '/':
@@ -76,6 +95,15 @@ func (l *Lexer) nextToken() token.Token {
 		tok = newToken(token.LT, l.ch)
 	case '>':
 		tok = newToken(token.GT, l.ch)
+	case '=':
+		// check if the next character is an equal sign
+		if l.peekChar() == '=' {
+			// read the equal sign
+			l.readChar()
+			tok = token.Token{Type: token.EQ, Literal: "=="}
+		} else {
+			tok = newToken(token.ASSIGN, l.ch)
+		}
 	case 0:
 		// reached the end of the input
 		tok.Literal = ""
