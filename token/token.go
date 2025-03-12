@@ -33,6 +33,8 @@ const (
 	PLUS   = "+"
 	MINUS  = "-"
 	SLASH  = "/"
+	BANG = "!" 
+	ASTERISK = "*"	
 
 	// logical operators
 	LT = "<"
@@ -51,6 +53,10 @@ const (
 	LET      = "LET"
 	FUNCTION = "FUNCTION"
 	RETURN   = "RETURN"
+	TRUE	 = "TRUE"
+	FALSE	 = "FALSE"
+	IF		 = "IF"
+	ELSE	 = "ELSE"
 )
 
 
@@ -59,6 +65,10 @@ var keywords = map[string]TokenType{
 	"fn":  FUNCTION,
 	"let": LET,
 	"return": RETURN,
+	"true": TRUE,
+	"false": FALSE,
+	"if": IF,
+	"else": ELSE,
 }
 
 // LookupIdent checks if the identifier is a keyword
