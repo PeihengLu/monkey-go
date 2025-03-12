@@ -65,6 +65,19 @@ func (l *Lexer) nextToken() token.Token {
 		// reached the end of the input
 		tok.Literal = ""
 		tok.Type = token.EOF
+	default:
+		// if the character is not a special character
+		// we check if it is a letter
+		if isLetter(l.ch) {
+			// read the identifier
+			tok.Literal = l.readIdentifier()
+			// check if the identifier is a keyword
+			tok.Type = token.LookupIdent(tok.Literal)
+			// return the token
+		} else {
+			// illegal token	
+			tok = newToken(token.ILLEGAL, l.ch)
+		}
 	}
 
 	return tok
@@ -73,4 +86,25 @@ func (l *Lexer) nextToken() token.Token {
 // newToken creates a new token with the given token type and literal
 func newToken(tokenType token.TokenType, ch byte) token.Token {
 	return token.Token{Type: tokenType, Literal: string(ch)}
+}
+
+// readIdentifier reads the identifier from the input string
+func (l *Lexer) readIdentifier() string {
+	// reads the identifier until it encounters a non-letter character
+	position := l.position
+	// for loop in Go is similar to while loop in other languages
+	// it continues until the condition is false
+	// in this case, it continues until the character is not a letter
+	// or an underscore
+	for isLetter(l.ch) {
+		l.readChar()
+	}
+	// return the identifier
+	return l.input[position:l.position]
+}
+
+// isLetter checks if the character is a letter
+func isLetter(ch byte) bool {
+	// check if the character is a letter or an underscore
+	return 'a' <= ch && ch <= 'z' || 'A' <= ch && ch <= 'Z' || ch == '_'
 }

@@ -31,17 +31,46 @@ const (
 	// operators
 	ASSIGN = "="
 	PLUS   = "+"
+	MINUS  = "-"
+	SLASH  = "/"
+
+	// logical operators
+	LT = "<"
+	GT = ">"
 
 	// delimiters
 	COMMA     = ","
 	SEMICOLON = ";"
 
-	LPAREN   = "("
-	RPAREN   = ")"
-	LBRACKET = "{"
-	RBRACKET = "}"
+	LPAREN = "("
+	RPAREN = ")"
+	LBRACE = "{"
+	RBRACE = "}"
 
 	// keywords
 	LET      = "LET"
 	FUNCTION = "FUNCTION"
+	RETURN   = "RETURN"
 )
+
+
+// differentiates between keywords and identifiers using a map
+var keywords = map[string]TokenType{
+	"fn":  FUNCTION,
+	"let": LET,
+	"return": RETURN,
+}
+
+// LookupIdent checks if the identifier is a keyword
+// and returns the keyword's TokenType
+func LookupIdent(ident string) TokenType {
+	// if the identifier is found in the keywords map
+	// return the keyword's TokenType
+	// the if statement is a shorthand for:
+	// token, ok := keywords[ident]
+	// if ok { ... }
+	if token, ok := keywords[ident]; ok {
+		return token
+	}
+	return IDENT
+}
