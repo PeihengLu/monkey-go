@@ -83,7 +83,7 @@ func (l *Lexer) NextToken() token.Token {
 		if l.peekChar() == '=' {
 			// read the equal sign
 			l.readChar()
-			tok = token.Token{Type: token.NOT_EQ, Literal: "!="}
+			tok = newTokenString(token.NOT_EQ, "!=")
 		} else {
 			tok = newToken(token.BANG, l.ch)
 		}
@@ -100,13 +100,13 @@ func (l *Lexer) NextToken() token.Token {
 		if l.peekChar() == '=' {
 			// read the equal sign
 			l.readChar()
-			tok = token.Token{Type: token.EQ, Literal: "=="}
+			tok = newTokenString(token.EQ, "==")
 		} else {
 			tok = newToken(token.ASSIGN, l.ch)
 		}
 	case 0:
 		// reached the end of the input
-		tok.Literal = ""
+		tok.Literal = ""	
 		tok.Type = token.EOF
 	default:
 		// if the character is not a special character
@@ -116,17 +116,22 @@ func (l *Lexer) NextToken() token.Token {
 			tok.Literal = l.readIdentifier()
 			// check if the identifier is a keyword
 			tok.Type = token.LookupIdent(tok.Literal)
-			// return the token
+			// return the token to prevent the next readChar() call
+			return tok
 		} else if isDigit(l.ch) {
 			// read the number
 			tok.Type = token.INT
 			tok.Literal = l.readNumber()
-			// return the token
+			// return the token to prevent the next readChar() call
+			return tok
 		} else {
 			// illegal token	
 			tok = newToken(token.ILLEGAL, l.ch)
 		}
 	}
+
+	// read the next character
+	l.readChar()
 
 	return tok
 }
@@ -144,6 +149,11 @@ func (l *Lexer) skipWhitespace() {
 // newToken creates a new token with the given token type and literal
 func newToken(tokenType token.TokenType, ch byte) token.Token {
 	return token.Token{Type: tokenType, Literal: string(ch)}
+}
+
+// overloaded newToken function that accepts a string literal
+func newTokenString(tokenType token.TokenType, literal string) token.Token {
+	return token.Token{Type: tokenType, Literal: literal}
 }
 
 // readIdentifier reads the identifier from the input string
